@@ -11,14 +11,17 @@ import { HttpClientModule } from '@angular/common/http'
 
 import {JwtModule, JWT_OPTIONS} from '@auth0/angular-jwt';
 import { LoginComponent } from './login/login.component';
+import { AdminComponent } from './admin/admin.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { environment } from '../environments/environment'
 
 
-export function jwtOptionsFactory(tokenService) {
+export function jwtOptionsFactory() {
   return {
     tokenGetter: () => {
-      return tokenService.getAsyncToken();
+      return localStorage.getItem('access_token');
     },
-    allowedDomains: ['localhost:443']
+    allowedDomains: [environment.url]
   }
 }
 
@@ -30,17 +33,19 @@ export function jwtOptionsFactory(tokenService) {
     HomeComponent,
     BlogComponent,
     LoginComponent,
+    AdminComponent,
     
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule,
     JwtModule.forRoot({
       jwtOptionsProvider: {
         provide: JWT_OPTIONS,
         useFactory: jwtOptionsFactory,
-        deps: [localStorage]
       }
     })
   ],
